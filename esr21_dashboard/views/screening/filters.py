@@ -1,6 +1,5 @@
 from edc_dashboard.listboard_filter import ListboardFilter, ListboardViewFilters
 
-
 class CustomListboardViewFilters(ListboardViewFilters):
     all = ListboardFilter(
         name='all',
@@ -18,6 +17,3 @@ class CustomListboardViewFilters(ListboardViewFilters):
         label='Not Eligible',
         lookup={'is_eligible': False}
     )
-
-
-

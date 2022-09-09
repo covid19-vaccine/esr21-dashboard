@@ -7,3 +7,4 @@ from .subject_offstudy_model_wrapper import SubjectOffStudyModelWrapper
 from .deviations_model_wrapper import ProtocolDeviationsModelWrapper
 from .note_to_file_wrapper import NoteToFileModelWrapper
 # from .screening_eligibility_wrapper import ScreeningEligibilityModelWrapper
+from .screen_out_model_wrapper import ScreenOutModelWrapper

@@ -6,11 +6,12 @@ from edc_model_wrapper import ModelWrapper
 from .contact_information_model_wrapper_mixin import ContactInformationWrapperMixin
 from .subject_consent_wrapper_mixin import SubjectConsentWrapperMixin
 from .vaccination_history_model_wrapper_mixin import VaccinationHistoryModelWrapperMixin
-
+from .screen_out_wrapper_mixin import ScreeningOutWrapperMixin
 
 class InformedConsentModelWrapper(ContactInformationWrapperMixin,
                                   SubjectConsentWrapperMixin,
                                   VaccinationHistoryModelWrapperMixin,
+                                  ScreeningOutWrapperMixin,
                                   ModelWrapper):
 
     model = 'esr21_subject.informedconsent'

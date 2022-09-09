@@ -31,22 +31,24 @@
     <td style="white-space: nowrap">
     <div class="btn-group">
     {% eligibility_confirmation_button result %}
+    
     {% if not result.is_eligible %}
         {% eligibility_button result %}
     {% endif %}
     {% if result.is_eligible and not result.subject_identifier %}
         {% consent_button result %}
-    {% endif %}
-    {% if result.subject_identifier %}
-        {% if result.screening and not result.screening.object.is_eligible %}
-            {% edit_screening_button result %}
-            {% screening_ineligibility_button result %}
-        {% else %}
-            {% screening_eligibility_button result %} 
-            {% if result.screening %}
-                {% vaccination_history_button result %}
-                {% if result.vaccination_history %}
-                    {% dashboard_button result %}
+        
+        {% if result.consent %}
+            {% if result.screening and not result.screening.object.is_eligible %}
+                {% edit_screening_button result %}
+                {% screening_ineligibility_button result %}
+            {% else %}
+                {% screening_eligibility_button result %} 
+                {% if result.screening %}
+                	{% vaccination_history_button result %}
+	                {% if result.vaccination_history %}
+	                    {% dashboard_button result %}
+	                {% endif %}
                 {% endif %}
             {% endif %}
         {% endif %}

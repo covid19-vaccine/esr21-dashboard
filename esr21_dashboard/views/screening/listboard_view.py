@@ -38,6 +38,7 @@ class ListBoardView(NavbarViewMixin, EdcBaseViewMixin, ListboardFilterViewMixin,
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+    
         context.update(
             eligibility_confirmation_add_url=self.model_cls().get_absolute_url())
         return context

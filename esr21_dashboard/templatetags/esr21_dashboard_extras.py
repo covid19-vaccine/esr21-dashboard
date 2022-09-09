@@ -10,6 +10,15 @@ from django.apps import apps as django_apps
 register = template.Library()
 
 
+# screen_out
+@register.inclusion_tag('esr21_dashboard/buttons/screening_out_button.html')
+def screening_out_button(model_wrapper):
+    title = ['Edit screen out form.']
+    return dict(
+        add_screenout_href=model_wrapper.screen_out.href,
+        screen_out=model_wrapper.screen_out,
+        screen_out_model_obj=model_wrapper.screen_out_model_obj)
+
 # ntf
 @register.inclusion_tag('esr21_dashboard/buttons/edit_ntf_button.html')
 def edit_ntf_button(model_wrapper):
@@ -197,18 +206,6 @@ def consent_v3_button(model_wrapper):
         title=' '.join(title))
 
 
-# insert a simple tag
-# @register.filter(name='get_label_lower')
-# def get_label_lower(info):
-
-#     esr21_subject = django_apps.get_app_config('esr21_subject')
-#     list_x_mdl = []
-#     for dev_str in ast.literal_eval(info):
-#         print(dev_str)
-#         list_x = [x_model._meta.verbose_name for x_model in esr21_subject.get_models() if x_model._meta.label_lower == dev_str]
-#         list_x_mdl += list_x
-        
-#     return list_x_mdl
 
 @register.filter(name='get_label_lower')
 def get_label_lower(info):

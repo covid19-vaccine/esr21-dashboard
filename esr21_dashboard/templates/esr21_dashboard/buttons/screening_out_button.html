@@ -1,0 +1,11 @@
+<a id="screen_out_add_{{ subject_identifier }}" 
+   title="{{ title }}"
+   {% if not screen_out %}
+      class="btn btn-warning btn-sm" data-toggle="tooltip"  data-placement="right"
+      href="{{ add_screenout_href }}">
+   {% else %}
+      class="btn btn-success btn-sm" data-toggle="tooltip"  data-placement="right"
+      href="{{ add_screenout_href }}">
+   {% endif %}
+   Screening Out
+</a>

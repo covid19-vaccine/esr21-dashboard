@@ -40,6 +40,14 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     @property
     def vaccination_details_cls(self):
         return django_apps.get_model(self.vaccination_details_model)
+    
+    @property
+    def screening_eligibility_cls(self):
+        return django_apps.get_model('esr21_subject.screeningeligibility')
+    
+    @property
+    def screening_out_cls(self):
+        return django_apps.get_model('esr21_subject.screenout')
 
     @property
     def consent_model_cls(self):
@@ -99,7 +107,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
         context = super().get_context_data(**kwargs)
         locator_obj = self.get_locator_info()
-        deviations = self.get_deviations()
         ntf = self.get_ntf()
 
         if 'main_schedule_enrollment' in self.request.path:
@@ -125,9 +132,9 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             show_schedule_buttons=self.show_schedule_buttons,
             wrapped_consent_v3=self.wrapped_consent_v3,
             reconsented=self.reconsented,
-            deviations=deviations,
             note_to_file = ntf,
             valid_doses = self.check_dose_quantity,
+            screen_out = self.check_screen_out,
             
         )
 
@@ -321,16 +328,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             return False
         else:
             True
-
-    @property
-    def protocol_deviations_cls(self):
-        return django_apps.get_model('esr21_subject.protocoldeviations')
-
-    def get_deviations(self):
-        pid_dev_list = self.protocol_deviations_cls.objects.filter(
-            subject_identifiers__name=self.subject_identifier)    
-        
-        return pid_dev_list 
     
     @property
     def ntf_cls(self):
@@ -354,3 +351,29 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             if history.received_vaccine == YES and history.dose_quantity == '3':
                 return True
         return False
+
+
+    @property
+    def check_screen_out(self):
+        subject_identifier = self.kwargs.get('subject_identifier')
+        try:
+            obj = self.screening_eligibility_cls.objects.get(
+                subject_identifier=subject_identifier)
+        except self.screening_eligibility_cls.DoesNotExist:
+            return False
+        else:
+            if obj:
+                vac_details = self.vaccination_details_cls.objects.filter(
+                    subject_visit__subject_identifier=subject_identifier,
+                    received_dose=YES)
+                if vac_details.count() == 0:
+                    try:
+                        obj = self.screening_out_cls.objects.get(
+                            subject_identifier=subject_identifier)
+                    except self.screening_out_cls.DoesNotExist:
+                        messages.add_message(self.request, messages.ERROR,
+                                             'Please fill the screen out for this participant')
+                        return True
+                    else:
+                        messages.add_message(self.request, messages.SUCCESS,
+                        'This participant has screened out')

@@ -9,6 +9,16 @@
         </td>
     </tr>
 
+
+    {% if screen_out %}
+    <tr>
+        <td>
+        {% screening_out_button subject_consent %}
+        </td>
+    </tr>
+    
+    {% endif %}
+
     {% if subject_offstudy %}
         {# subject_offstudy to be vaulated first before rendering the button  #}
         <tr>
