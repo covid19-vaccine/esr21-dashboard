@@ -120,10 +120,9 @@
 
 	<div id="subject_dashboard_appointments_for_{{ visit_schedule.name|slugify }}-{{ schedule.name|slugify }}"
 		class="panel-collapse collapse {% if visit_code != None %}in{% endif %}">
-		
-
+	
 	{% block appointments %}
-		{% include "edc_subject_dashboard/dashboard/appointments.html" %}
+		{% include "esr21_dashboard/subject/dashboard/appointments.html" %}
 	{% endblock appointments %}
 	</div>
 	{% block appointments_schedule_footer %}
