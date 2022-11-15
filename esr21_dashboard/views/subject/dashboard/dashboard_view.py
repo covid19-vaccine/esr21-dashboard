@@ -18,6 +18,8 @@ from django.shortcuts import redirect
 from django.apps import apps as django_apps
 from edc_base.utils import get_utcnow
 from django.contrib import messages
+from django.contrib.messages import get_messages
+
 
 
 class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMixin,
@@ -74,7 +76,10 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             # create instance of the wrapper
             subject_offstudy_wrapper = SubjectOffStudyModelWrapper(model_obj=subject_offstudy_obj)
 
-            # return instance so it can be used in the context
+            reason = subject_offstudy_wrapper.object.get_reason_display()
+            messages.add_message(self.request, messages.ERROR,
+                                 f'Subject is off study due to {reason}')
+            
             return subject_offstudy_wrapper
 
     @property
@@ -99,6 +104,14 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
         context = super().get_context_data(**kwargs)
         locator_obj = self.get_locator_info()
+        edc_readonly = None
+        
+        if self.request.GET.get('edc_readonly'):
+            edc_readonly = self.request.GET.get('edc_readonly') == '1'
+            
+        if edc_readonly:
+            storage = get_messages(self.request)
+            storage.used = True    
 
         if 'main_schedule_enrollment' in self.request.path:
             self.enrol_subject(cohort='esr21')
@@ -123,7 +136,8 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             show_schedule_buttons=self.show_schedule_buttons,
             wrapped_consent_v3=self.wrapped_consent_v3,
             reconsented=self.reconsented,
-            valid_doses=self.check_dose_quantity
+            valid_doses=self.check_dose_quantity,
+            edc_readonly=edc_readonly,
         )
 
         return context
@@ -329,3 +343,4 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             if history.received_vaccine == YES and history.dose_quantity == '3':
                 return True
         return False
+    
